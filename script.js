@@ -271,12 +271,12 @@ function initTiltCards() {
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = `perspective(1000px) rotateX(${-y * 10}deg) rotateY(${x * 10}deg) translateY(-10px)`;
+      card.style.transform = `perspective(1000px) rotateX(${-y * 24}deg) rotateY(${x * 24}deg) translateZ(30px)`;
       card.style.transition = 'transform 0.1s ease';
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
       card.style.transition = 'transform 0.5s ease';
     });
   });
@@ -563,6 +563,60 @@ if (navLogo) {
       navLogo.style.textShadow = '';
     }, 100);
   }, 4000);
+}
+
+// ===== CUSTOM CURSOR =====
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+
+if (cursorDot && cursorOutline) {
+  window.addEventListener('mousemove', (e) => {
+    const posX = e.clientX;
+    const posY = e.clientY;
+
+    cursorDot.style.left = `${posX}px`;
+    cursorDot.style.top = `${posY}px`;
+
+    cursorOutline.animate({
+      left: `${posX}px`,
+      top: `${posY}px`
+    }, { duration: 500, fill: 'forwards' });
+  });
+
+  const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-category-card, .contact-card, .edu-card, input');
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursorDot.classList.add('active');
+      cursorOutline.classList.add('active');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursorDot.classList.remove('active');
+      cursorOutline.classList.remove('active');
+    });
+  });
+}
+
+// ===== CARD GLOW EFFECTS =====
+document.querySelectorAll('.project-card, .skill-category-card, .contact-card, .edu-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  });
+});
+
+// ===== AVATAR MAN SCROLL LOGIC =====
+const avatarMan = document.getElementById('avatar-man');
+if (avatarMan) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 150) {
+      avatarMan.classList.add('sitting');
+    } else {
+      avatarMan.classList.remove('sitting');
+    }
+  });
 }
 
 console.log('%c🚀 Rasel Portfolio', 'font-size: 24px; font-weight: bold; color: #54C5F8;');
